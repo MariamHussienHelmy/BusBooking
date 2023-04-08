@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+     
+}
+
+body {
+    
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: #f6f5f7;
+}
+.head {
+    position: relative;
+    width: 810px;
+    background: #435d7d;
+    color: #fff;
+    padding: 34px;
+    border-radius: 6px;
+    margin-top: 50px;
+    margin-left: 290px;
+}
+
+.head h1 {
+    background: #435d7d;
+}
