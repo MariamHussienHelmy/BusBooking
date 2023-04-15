@@ -11,7 +11,7 @@ app.use(cors()); // ALLOW HTTP REQUESTS LOCAL HOSTS
 
 // ====================  Required Module ====================
 const auth = require("./routes/Auth");
-//const movies = require("./routes/Movies");
+const appointments = require("./routes/Appointments");
 
 // ====================  RUN THE APP  ====================
 app.listen(8082, "localhost", () => {
@@ -20,4 +20,4 @@ app.listen(8082, "localhost", () => {
 
 // ====================  API ROUTES [ ENDPOINTS ]  ====================
 app.use("/auth", auth);
-// app.use("/movies", movies);
+app.use("/appointments", appointments);
