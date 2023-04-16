@@ -4,6 +4,7 @@ const { body, validationResult } = require("express-validator");
 const util = require("util"); // helper
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const jwt = require('jsonwebtoken');
 
 // LOGIN
 router.post(
@@ -20,11 +21,11 @@ router.post(
         return res.status(400).json({ errors: errors.array() });
       }
 
-      // 2- CHECK IF EMAIL EXISTS
       const query = util.promisify(conn.query).bind(conn); // transform query mysql --> promise to use [await/async]
       const user = await query("select * from users where email = ?", [
         req.body.email,
       ]);
+      await query("UPDATE users SET status ='active' WHERE id = 1");
       if (user.length == 0) {
         res.status(404).json({
           errors: [
@@ -35,13 +36,20 @@ router.post(
         });
       }
 
-      // 3- COMPARE HASHED PASSWORD
       const checkPassword = await bcrypt.compare(
         req.body.password,
         user[0].password
       );
       if (checkPassword) {
+        // 2- CREATE TOKEN & SAVE TO SESSION
+        // const token = crypto.randomBytes(32).toString("hex");
+        // req.session.token = token;
+        //req.session.user = user[0];
+
+        // 3- REMOVE PASSWORD FIELD FROM USER OBJECT BEFORE SENDING AS RESPONSE
         delete user[0].password;
+        console.log(user.token);
+        // 4- SEND RESPONSE WITH USER OBJECT
         res.status(200).json(user[0]);
       } else {
         res.status(404).json({
@@ -57,7 +65,6 @@ router.post(
     }
   }
 );
-
 // REGISTRATION
 router.post(
   "/register",
@@ -66,7 +73,8 @@ router.post(
     .isString()
     .withMessage("please enter a valid name")
     .isLength({ min: 10, max: 20 })
-    .withMessage("name should be between (10-20) character"),
+    .withMessage("name should be between (10-20) character")
+  ,
   body("password")
     .isLength({ min: 8, max: 12 })
     .withMessage("password should be between (8-12) character"),
@@ -112,26 +120,30 @@ router.post(
     }
   }
 );
-const logout = async (req, res, next) => {
-  try {
-    // Update user status to inactive in the database
-    const query = util.promisify(conn.query).bind(conn);
-    await query("UPDATE users SET status = ? WHERE id = ?", [
-      "inactive",
-      req.session.user.id,
-    ]);
 
-    // Destroy the session and clear the cookie
-    req.session.destroy((err) => {
-      if (err) {
-        return next(err);
-      }
-      res.clearCookie("session");
-      return res.redirect("/login");
+
+router.put(
+  "/logout",
+  async (req, res) => {
+    const query = util.promisify(conn.query).bind(conn);
+    await query("UPDATE users SET status ='inactive' WHERE id = 1");
+    res.status(200).json({
+      msg: "created successfully !",
     });
-  } catch (err) {
-    return next(err);
+  })
+router.get("/isactive",
+  async (req, res) => {
+    const query = util.promisify(conn.query).bind(conn);
+    let status = await query("SELECT status FROM users WHERE id= 1");
+
+    res.status(200).json(
+      status[0]
+
+    )
   }
-};
+
+
+)
+
 
 module.exports = router;
