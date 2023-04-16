@@ -2,12 +2,29 @@ import React from 'react';
 import './login.css';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import word from '../Usercomponents/Header';
+import Axios from "axios";
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    let result = await Axios.post("http://localhost:8080/auth/login",
+      {
+        // data
+        email: data.email,
+        password: data.password
+
+      },
+
+    );
+
+
+    localStorage.setItem("token", (result.data.token));
+
+    console.log(result);
+
   };
+
 
   return (
     <div className="wrapper">
@@ -21,7 +38,7 @@ function Login() {
           {errors.email && <p className="error-message">Invalid email format</p>}
         </div>
         <div className="input-box">
-          <input type="password" placeholder="Create password" required {...register('password', {
+          <input type="password" placeholder="password" required {...register('password', {
             minLength: 8
           })} />
           {errors.password && <p className="error-message">Password at least 8 characters</p>}
@@ -37,3 +54,4 @@ function Login() {
     </div>
   );
 }
+export default Login;
