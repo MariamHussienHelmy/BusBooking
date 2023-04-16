@@ -2,10 +2,22 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import "./register.css";
 import { Link } from 'react-router-dom';
+import Axios from "axios";
+
+//npm i react-axios
 const Register = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
+    Axios.post("http://localhost:8080/auth/register",
+      {
+        // data
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        password: data.password
+      }
+    )
     console.log(data);
   };
 
@@ -15,6 +27,10 @@ const Register = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="input-box">
           <input type="text" placeholder="Enter your name" {...register("name", { required: true })} required />
+          {errors.name && <p className="error">enter your name</p>}
+        </div>
+        <div className="input-box">
+          <input type="text" placeholder="Enter your phone" {...register("phone", { required: true })} required />
           {errors.name && <p className="error">enter your name</p>}
         </div>
         <div className="input-box">
@@ -28,7 +44,9 @@ const Register = () => {
           {errors.password?.type === 'minLength' && <p className="error">Password at least 8 characters</p>}
         </div>
         <div className="input-box button">
+
           <input type="submit" value="Register Now" />
+
         </div>
         <div className="text">
           <h3>
