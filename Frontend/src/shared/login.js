@@ -2,10 +2,11 @@ import React from 'react';
 import './login.css';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import word from '../Usercomponents/Header';
 import Axios from "axios";
+
+import { setAuthUser } from "../helper/Storage";
 function Login() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, setError, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     let result = await Axios.post("http://localhost:8080/auth/login",
@@ -14,20 +15,34 @@ function Login() {
         email: data.email,
         password: data.password
 
-      },
+      })
+      .then((resp) => {
+        setAuthUser(resp.data);
+      })
+      .catch((e) => {
 
-    );
+        const errors = e.response.data;
 
-
-    localStorage.setItem("token", (result.data.token));
-
-    console.log(result);
+        if (errors.err) {
+          setError('email', {
+            type: "server",
+            // message: "wrong email"
+          });
+        }
+        if (errors.errors[0].msg) {
+          setError('password', {
+            type: "server",
+            message: errors.errors[0].msg
+          });
+        }
+      });
 
   };
 
 
   return (
     <div className="wrapper">
+
       <h2>Login</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -35,13 +50,17 @@ function Login() {
           <input type="text" placeholder="Enter your email" required {...register('email', {
             pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i
           })} />
-          {errors.email && <p className="error-message">Invalid email format</p>}
+          {errors.email && <p>{errors.email.message}  something went wrong with email</p>}
+          <p> {errors.email && errors.email.message}</p>
+
         </div>
         <div className="input-box">
           <input type="password" placeholder="password" required {...register('password', {
             minLength: 8
           })} />
-          {errors.password && <p className="error-message">Password at least 8 characters</p>}
+
+          {errors.password && <p>{errors.password.message} password at least 8 characters</p>}
+
         </div>
 
         <div className="input-box button">
