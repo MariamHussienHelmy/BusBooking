@@ -26,7 +26,7 @@ router.post(
         req.body.email,
       ]);
       await query("UPDATE users SET status ='active' WHERE id = 1");
-      if (user.length == 0) {
+      if (!user) {
         res.status(404).json({
           errors: [
             {
@@ -41,10 +41,6 @@ router.post(
         user[0].password
       );
       if (checkPassword) {
-        // 2- CREATE TOKEN & SAVE TO SESSION
-        // const token = crypto.randomBytes(32).toString("hex");
-        // req.session.token = token;
-        //req.session.user = user[0];
 
         // 3- REMOVE PASSWORD FIELD FROM USER OBJECT BEFORE SENDING AS RESPONSE
         delete user[0].password;
@@ -61,7 +57,11 @@ router.post(
         });
       }
     } catch (err) {
-      res.status(500).json({ err: err });
+      res.status(500).json({
+        err: err
+      }
+      );
+
     }
   }
 );
@@ -72,7 +72,7 @@ router.post(
   body("name")
     .isString()
     .withMessage("please enter a valid name")
-    .isLength({ min: 10, max: 20 })
+    .isLength({ max: 20 })
     .withMessage("name should be between (10-20) character")
   ,
   body("password")
@@ -92,7 +92,7 @@ router.post(
         "select * from users where email = ?",
         [req.body.email]
       );
-      if (checkEmailExists.length > 0) {
+      if (checkEmailExists) {
         res.status(400).json({
           errors: [
             {
