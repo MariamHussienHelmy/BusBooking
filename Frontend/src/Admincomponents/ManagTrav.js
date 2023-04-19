@@ -6,7 +6,7 @@ import Edit from "./EditTrav";
 import Delete from './Delete';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-
+import { Link } from 'react-router-dom';
 const ManagTrav = () => {
 
     function display() {
@@ -49,17 +49,26 @@ const ManagTrav = () => {
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Password</th>
+                                    <th>Phone</th>
                                     <th>History of requests</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>Name</td>
                                     <td>user1@gmail.com</td>
                                     <td> Passs123</td>
-                                    <td> <button class="btn btn-success">Show</button></td>
+                                    <td>0112223333</td>
+                                    <td>
+                                        <Link to="/show">
+                                            <button class="btn btn-success">Show</button>
+                                        </Link>
+                                    </td>
+
                                     <td>
                                         <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons"
                                             data-toggle="tooltip" title="Edit" onClick={displayedit} >&#xE254;</i></a>
