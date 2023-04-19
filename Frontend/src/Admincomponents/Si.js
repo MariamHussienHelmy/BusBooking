@@ -37,8 +37,10 @@ const s = () => {
                     <li class="profile">
                         <div class="profile-details">
                             <div class="name_job">
-                                <div ><button class="butto">Log
-                                    out</button></div>
+                                <div > <Link to="/login">
+                                        <button class="butto" style={{ backgroundColor: "#1d1b31" }}>Log
+                                            out</button>
+                                    </Link></div>
                             </div>
                         </div>
 
