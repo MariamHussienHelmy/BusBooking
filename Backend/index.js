@@ -12,6 +12,7 @@ app.use(cors()); // ALLOW HTTP REQUESTS LOCAL HOSTS
 // ====================  Required Module ====================
 const auth = require("./routes/Auth");
 const appointments = require("./routes/Appointments");
+const request = require("./routes/Request");
 const travelers = require("./routes/Traveler");
 // ====================  RUN THE APP  ====================
 app.listen(8082, "localhost", () => {
@@ -22,3 +23,4 @@ app.listen(8082, "localhost", () => {
 app.use("/auth", auth);
 app.use("/appointments", appointments);
 app.use("/traveler",travelers);
+app.use("/request", request);
