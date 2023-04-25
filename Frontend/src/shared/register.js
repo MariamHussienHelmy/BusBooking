@@ -37,7 +37,7 @@ const Register = () => {
 
   return (
     <div className="wrapper">
-      {error && <h1>{error}</h1>}
+      {error && <h1 className="error">{error}</h1>}
       <h2>Registration</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="input-box">
