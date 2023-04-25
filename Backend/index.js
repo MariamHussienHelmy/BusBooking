@@ -15,7 +15,7 @@ const appointments = require("./routes/Appointments");
 const request = require("./routes/Request");
 const travelers = require("./routes/Traveler");
 // ====================  RUN THE APP  ====================
-app.listen(8082, "localhost", () => {
+app.listen(4000, "localhost", () => {
   console.log("SERVER IS RUNNING ");
 });
 

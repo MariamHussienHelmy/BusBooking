@@ -4,7 +4,7 @@ const { body, validationResult } = require("express-validator");
 const util = require("util"); // helper
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 // LOGIN
 router.post(
@@ -41,7 +41,6 @@ router.post(
         user[0].password
       );
       if (checkPassword) {
-
         // 3- REMOVE PASSWORD FIELD FROM USER OBJECT BEFORE SENDING AS RESPONSE
         delete user[0].password;
         console.log(user.token);
@@ -58,10 +57,8 @@ router.post(
       }
     } catch (err) {
       res.status(500).json({
-        err: err
-      }
-      );
-
+        err: err,
+      });
     }
   }
 );
@@ -119,29 +116,18 @@ router.post(
   }
 );
 
+router.put("/logout", async (req, res) => {
+  const query = util.promisify(conn.query).bind(conn);
+  await query("UPDATE users SET status ='inactive' WHERE id = 1");
+  res.status(200).json({
+    msg: "created successfully !",
+  });
+});
+router.get("/isactive", async (req, res) => {
+  const query = util.promisify(conn.query).bind(conn);
+  let status = await query("SELECT status FROM users WHERE id= 1");
 
-router.put(
-  "/logout",
-  async (req, res) => {
-    const query = util.promisify(conn.query).bind(conn);
-    await query("UPDATE users SET status ='inactive' WHERE id = 1");
-    res.status(200).json({
-      msg: "created successfully !",
-    });
-  })
-router.get("/isactive",
-  async (req, res) => {
-    const query = util.promisify(conn.query).bind(conn);
-    let status = await query("SELECT status FROM users WHERE id= 1");
-
-    res.status(200).json(
-      status[0]
-
-    )
-  }
-
-
-)
-
+  res.status(200).json(status[0]);
+});
 
 module.exports = router;

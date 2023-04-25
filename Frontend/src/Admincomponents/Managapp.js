@@ -9,6 +9,7 @@ import "../AdminStyle/AddTrav.css";
 import "../AdminStyle/EditTrav.css";
 import "../AdminStyle/Editapp.css";
 const Ma = () => {
+    
     function display() {
         var x = document.getElementById("addapp");
         x.style.display = "block";
