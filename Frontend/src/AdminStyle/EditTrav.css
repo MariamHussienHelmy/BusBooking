@@ -78,7 +78,7 @@
  }
  #edit{
     position:fixed;
-    height:370px;
+    min-height:370px;
     width:400px;
     margin-top:30px;
     margin-left:500px;
@@ -97,5 +97,5 @@
     display:flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-top:90px;
+    margin-top:170px;
 }

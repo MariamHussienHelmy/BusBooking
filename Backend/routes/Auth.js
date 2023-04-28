@@ -1,10 +1,13 @@
 const router = require("express").Router();
-const conn = require("../db/dbConnection");
 const { body, validationResult } = require("express-validator");
+
+const conn = require("../db/dbConnection");
 const util = require("util"); // helper
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+
+const authController = require("../controllers/auth");
 
 // LOGIN
 router.post(
@@ -13,55 +16,11 @@ router.post(
   body("password")
     .isLength({ min: 8, max: 12 })
     .withMessage("password should be between (8-12) character"),
-  async (req, res) => {
-    try {
-      // 1- VALIDATION REQUEST [manual, express validation]
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
-      const query = util.promisify(conn.query).bind(conn); // transform query mysql --> promise to use [await/async]
-      const user = await query("select * from users where email = ?", [
-        req.body.email,
-      ]);
-      await query("UPDATE users SET status ='active' WHERE id = 1");
-      if (!user) {
-        res.status(404).json({
-          errors: [
-            {
-              msg: "email or password not found !",
-            },
-          ],
-        });
-      }
-
-      const checkPassword = await bcrypt.compare(
-        req.body.password,
-        user[0].password
-      );
-      if (checkPassword) {
-        // 3- REMOVE PASSWORD FIELD FROM USER OBJECT BEFORE SENDING AS RESPONSE
-        delete user[0].password;
-        console.log(user.token);
-        // 4- SEND RESPONSE WITH USER OBJECT
-        res.status(200).json(user[0]);
-      } else {
-        res.status(404).json({
-          errors: [
-            {
-              msg: "email or password not found !",
-            },
-          ],
-        });
-      }
-    } catch (err) {
-      res.status(500).json({
-        err: err,
-      });
-    }
-  }
+  authController.postLogin
 );
+
+///////////////////////////////////////////
+
 // REGISTRATION
 router.post(
   "/register",
@@ -116,9 +75,12 @@ router.post(
   }
 );
 
-router.put("/logout", async (req, res) => {
+router.put("/logout/:id", async (req, res) => {
   const query = util.promisify(conn.query).bind(conn);
-  await query("UPDATE users SET status ='inactive' WHERE id = 1");
+  await query(
+    "UPDATE users SET status ='inactive' WHERE id = ?",
+    req.params.id
+  );
   res.status(200).json({
     msg: "created successfully !",
   });

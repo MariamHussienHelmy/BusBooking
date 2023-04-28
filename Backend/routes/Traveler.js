@@ -3,8 +3,9 @@ const fs = require("fs"); // file system
 
 // Express Import
 const router = require("express").Router();
-const { body, validationResult } = require("express-validator");
-
+const { body } = require("express-validator");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 // File modules
 const conn = require("../db/dbConnection");
 const authorized = require("../middleware/authorize");
@@ -12,70 +13,65 @@ const admin = require("../middleware/admin");
 const upload = require("../middleware/uploadImages");
 const util = require("util"); // helper
 
+// Hash password function
+const hashPassword = (password) => {
+  const salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(password, salt);
+};
+
+// Generate token function
+const generateToken = () => {
+  return crypto.randomBytes(20).toString("hex");
+};
+
+// Register a new user
+const { check, validationResult } = require("express-validator");
+
 router.post(
   "/create",
-  admin,
+  [
+    check("name").notEmpty().withMessage("Name is required"),
+    check("email")
+      .notEmpty()
+      .withMessage("Email is required")
+      .isEmail()
+      .withMessage("Email is not valid"),
+    check("password").notEmpty().withMessage("Password is required"),
+    check("phone").notEmpty().withMessage("Phone number is required"),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
 
-  body("email").isEmail().withMessage("please enter a valid email!"),
-  body("name")
-    .isString()
-    .withMessage("please enter a valid name")
-    .isLength({ min: 10, max: 20 })
-    .withMessage("name should be between (10-20) character"),
-  body("phone")
-    .isMobilePhone()
-    .withMessage("please enter a valid number")
-    .isLength({ min: 5 }),
-  body("password")
-    .isLength({ min: 8, max: 12 })
-    .withMessage("password should be between (8-12) character"),
-  async (req, res) => {
-    try {
-      // 1- VALIDATION REQUEST [manual, express validation]
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
-      // 2- CHECK IF EMAIL EXISTS
-      const query = util.promisify(conn.query).bind(conn); // transform query mysql --> promise to use [await/async]
-      const checkEmailExists = await query(
-        "select * from users where email = ?",
-        [req.body.email]
-      );
-      if (checkEmailExists.length > 0) {
-        res.status(400).json({
-          errors: [
-            {
-              msg: "email already exists !",
-            },
-          ],
-        });
-
-      }
-
-      // 3- PREPARE OBJECT USER TO -> SAVE
-      const userData = {
-        name: req.body.name,
-        email: req.body.email,
-        password: await bcrypt.hash(req.body.password, 10),
-        token: crypto.randomBytes(16).toString("hex"), // JSON WEB TOKEN, CRYPTO -> RANDOM ENCRYPTION STANDARD
-      };
-
-      // 4- INSERT USER OBJECT INTO DB
-      await query("insert into users set ? ", userData);
-      delete userData.password;
-      res.status(200).json(userData);
-    } catch (err) {
-      res.status(500).json({ err: err });
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+
+    const { name, email, password, phone } = req.body;
+    const hashedPassword = hashPassword(password);
+    const token = generateToken();
+
+    const user = {
+      name,
+      email,
+      password: hashedPassword,
+      phone,
+      token,
+    };
+
+    conn.query("INSERT INTO users SET ?", user, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(201).json({ message: "User created successfully" });
+      }
+    });
   }
 );
 
 // UPDATE Appointment [ADMIN]
 router.put(
   "/:id", // params
-  admin,
+  //admin,
   body("name")
     .isString()
     .withMessage("please enter a valid name")
@@ -133,7 +129,7 @@ router.put(
 // DELETE APPOINTMENT [ADMIN]
 router.delete(
   "/:id", // params
-  admin,
+  //admin,
   async (req, res) => {
     try {
       // 1- VALIDATION REQUEST [manual, express validation]

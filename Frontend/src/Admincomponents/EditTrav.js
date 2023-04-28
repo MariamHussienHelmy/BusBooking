@@ -1,57 +1,114 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../AdminStyle/EditTrav.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Link, useNavigate } from "react-router-dom";
 
-const Edit = () => {
-    const { register, handleSubmit } = useForm();
+const EditTrav = ({ id }) => {
+  const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
-    function onSubmit(data) {
-        console.log(data);
-        // TODO: Add logic to save updated traveler data
-    }
+  useEffect(() => {
+    // Fetch the data using axios and update the state
+    axios
+      .get(`http://localhost:4000/traveler/getone/${id}`)
+      .then((response) => {
+        console.log(response);
+        setFormData(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, [id]);
 
-    function hideEdit() {
-        var x = document.getElementById("edit");
-        x.style.display = "none";
-    }
+  function handleSubmit(e) {
+    e.preventDefault();
+    // Update the data using axios
+    axios
+      .put(`http://localhost:4000/traveler/${id}`, formData)
+      .then((response) => {
+        console.log(response.data);
+        // Hide the edit form
+        hideEdit();
+        // Navigate to the manage travelers page
+        navigate("/managetrav", { state: { updated: true } });
+      })
+      .catch((error) => console.log(error));
+  }
 
-    return (
-        <div id="edit"
-            style={{
-                top: "0px",
-                position: "fixed",
-                left: 0
-            }}>
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div class="modal-header headadd">
-                            <h4 class="modal-title">Edit Traveler</h4>
-                            <button type="button" class="close btnx" data-dismiss="modal" aria-hidden="true" onClick={hideEdit}>&times;</button>
-                        </div>
-                        <hr />
-                        <div class="modal-body bodyadd">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" name="email"  {...register('email')} required />
-                            </div>
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input type="text" class="form-control" name="phone"  {...register('phone')} required />
-                            </div>
+  function hideEdit() {
+    var x = document.getElementById("edit");
+    x.style.display = "none";
+  }
 
-                        </div>
-
-                        <div class="modal-footer footeredit">
-                            <input type="button" class="btn btn-default" value="Cancel" onClick={hideEdit} />
-                            <input type="submit" class="btn btn-info" value="Save" />
-                        </div>
-                    </form>
-                </div>
+  return (
+    <div id="edit" style={{ top: "0px", position: "fixed", left: 0 }}>
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <form onSubmit={handleSubmit}>
+            <div className="modal-header headadd">
+              <h4 className="modal-title">Edit Travelers</h4>
+              <button
+                type="button"
+                className="close btnx"
+                data-dismiss="modal"
+                aria-hidden="true"
+                onClick={hideEdit}
+              >
+                ×
+              </button>
             </div>
+            <hr />
+            <div className="modal-body ">
+              <div className="form-group bodyadd">
+                <label>Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  value={formData.name || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group bodyadd">
+                <label>Email</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  value={formData.email || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group bodyadd">
+                <label>Phone</label>
+                <textarea
+                  className="form-control"
+                  required
+                  value={formData.phone || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                ></textarea>
+              </div>
+            </div>
+            <div className="modal-footer footer">
+              <input
+                type="button"
+                className="btn btn-default"
+                data-dismiss="modal"
+                value="Cancel "
+                onClick={hideEdit}
+              />
+              <input type="submit" className="btn btn-info" value="Save" />
+            </div>
+          </form>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default Edit;
+export default EditTrav;

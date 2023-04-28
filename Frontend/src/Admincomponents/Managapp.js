@@ -1,89 +1,143 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Si from "./Si";
 import "../AdminStyle/Mangeapp.css";
-import Addapp from './Addapp';
-import Editapp from './Editapp';
-import Delete from './Delete';
+import Addapp from "./Addapp";
+import Editapp from "./Editapp";
+import Delete from "./Delete";
 import "../AdminStyle/Addapp.css";
 import "../AdminStyle/AddTrav.css";
 import "../AdminStyle/EditTrav.css";
 import "../AdminStyle/Editapp.css";
+import axios from "axios";
+
 const Ma = () => {
-    
-    function display() {
-        var x = document.getElementById("addapp");
-        x.style.display = "block";
-    }
-    function displayedit() {
-        var x = document.getElementById("editapp");
-        x.style.display = "block";
-    }
-    function displaydelete() {
-        var x = document.getElementById("delete");
-        x.style.display = "block";
-    }
-    return (
-        <>
-            <Si />
+  const [appointment, setAppointment] = useState([]);
 
-            <div class="container-xl " id="tble" style={{
-                top: "30px",
-                left: 300,
-                position: "fixed",
-                width: 1200
-            }}>
-                <div  >
-                    <div class="table-wrapper ">
-                        <div class="table-title">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h2>Manage <b>Appointments </b></h2>
-                                </div>
-                                <div class="col-sm-6">
-                                    <a class="btn btn-success" data-toggle="modal" onClick={display} ><i
-                                        class="material-icons">&#xE147;</i> <span>Add</span></a>
-                                </div>
-                            </div>
-                        </div>
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>From</th>
-                                    <th>To</th>
-                                    <th>Ticket Price</th>
-                                    <th>Day and Time</th>
+  useEffect(() => {
+    axios.get(`http://localhost:4000/appointments/all`).then((res) => {
+      setAppointment(res.data);
+      console.log(res.data);
+    });
+  }, []);
 
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>cairo</td>
-                                    <td> Helwan</td>
-                                    <td> 70 EGP</td>
-                                    <td>20/7 7:00 AM</td>
+  function display() {
+    var x = document.getElementById("addapp");
+    x.style.display = "block";
+  }
+  const [editId, setEditId] = useState(null);
+  function displayedit(id) {
+    setEditId(id);
+    var x = document.getElementById("editapp");
+    x.style.display = "block";
+  }
 
-                                    <td>
-                                        <a class="edit" data-toggle="modal"><i class="material-icons"
-                                            data-toggle="tooltip" title="Edit" onClick={displayedit}>&#xE254;</i></a>
-                                        <a class="delete" data-toggle="modal"><i
-                                            class="material-icons" data-toggle="tooltip" title="Delete" onClick={displaydelete}>&#xE872;</i></a>
-                                    </td>
-                                </tr>
+  function displaydelete() {
+    var x = document.getElementById("delete");
+    x.style.display = "block";
+  }
 
-                            </tbody>
-                        </table>
+  const handleDelete = (id) => {
+    axios.delete(`http://localhost:4000/appointments/${id}`).then((res) => {
+      setAppointment(
+        appointment.filter((appointment) => appointment.id !== id)
+      );
+      console.log(res.data);
+    });
+  };
 
-                    </div>
+  return (
+    <>
+      <Si />
+
+      <div
+        className="container-xl "
+        id="tble"
+        style={{
+          top: "30px",
+          left: 300,
+          position: "fixed",
+          width: 1200,
+        }}
+      >
+        <div>
+          <div className="table-wrapper ">
+            <div className="table-title">
+              <div className="row">
+                <div className="col-sm-6">
+                  <h2>
+                    Manage <b>Appointments </b>
+                  </h2>
                 </div>
+                <div className="col-sm-6">
+                  <a
+                    className="btn btn-success"
+                    data-toggle="modal"
+                    onClick={display}
+                  >
+                    <i className="material-icons">&#xE147;</i> <span>Add</span>
+                  </a>
+                </div>
+              </div>
             </div>
+            <table className="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Ticket Price</th>
+                  <th>Day and Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointment.map((appointment) => (
+                  <tr key={appointment.id}>
+                    <td>{appointment.	from_where}</td>
+                    <td>{appointment.to_where}</td>
+                    <td>{appointment.ticket_price} EGP</td>
+                    <td>{appointment.day_and_time}</td>
+                    <td>
+                      <a className="edit" data-toggle="modal">
+                        <i
+                          className="material-icons"
+                          data-toggle="tooltip"
+                          title="Edit"
+                          onClick={() => displayedit(appointment.id)}
+                        >
+                          &#xE254;
+                        </i>
+                      </a>
+                      <a className="delete" data-toggle="modal">
+                        <i
+                          className="material-icons"
+                          data-toggle="tooltip"
+                          title="Delete"
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Are you sure you wish to delete this appointment?"
+                              )
+                            )
+                              handleDelete(appointment.id);
+                          }}
+                        >
+                          &#xE872;
+                        </i>
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-            <Addapp />
-            <Editapp />
-            <Delete />
-
-        </>
-    );
+      <Addapp />
+      <Editapp id={editId} />
+      <Delete />
+    </>
+  );
 };
 
 export default Ma;

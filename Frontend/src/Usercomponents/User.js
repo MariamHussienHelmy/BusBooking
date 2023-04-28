@@ -1,22 +1,26 @@
-import React from 'react';
+import React from "react";
 import "../UserStyle/User.css";
+import { getAuthUser } from "../helper/Storage";
 const User = () => {
-    return (
-        <div>
-            <div class="all">
-                <div class="card">
-                    <img src={require('./avt.png')} />
+  const user = getAuthUser();
+  const name = user.name;
+  const email = user.email;
+  const phone = user.phone;
+  return (
+    <div>
+      <div class="all">
+        <div class="card">
+          <img src={require("./avt.png")} />
 
-                    <h2>John Doe</h2>
+          <h2>{name}</h2>
 
-                    <h3>Contact:</h3>
-                    <p> user1@gmail.com</p>
-                    <p>+20223336</p>
-                </div>
-            </div>
-
+          <h3>Contact:</h3>
+          <p> {email}</p>
+          <p>{phone}</p>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default User;

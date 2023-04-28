@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import ManagTrav from "./Admincomponents/ManagTrav";
-import Show from "./Admincomponents/Show"
+import Show from "./Admincomponents/Show";
 import Ma from "./Admincomponents/Managapp";
 import Requests from "./Admincomponents/Requests";
 import Tickets from "./Usercomponents/Tickets";
@@ -8,44 +8,48 @@ import Profile from "./Usercomponents/Profile";
 import HistoryTickets from "./Usercomponents/HistoryTickets";
 import Login from "./shared/login";
 import Register from "./shared/register";
+
+import { isAuthenticated, isAdmin } from "./helper/Storage";
+
 export const router = createBrowserRouter([
-
-
+  {
+    path: "/",
+    element: <Tickets />,
+  },
   {
     path: "/managetrav",
-    element: <ManagTrav />
+    element: isAuthenticated() && isAdmin() ? <ManagTrav /> : <Login />,
   },
-
   {
-    path: "/show",
-    element: <Show />
+    path: "/show/:id",
+    element: <Show />,
   },
   {
     path: "/manageappoint",
-    element: <Ma />
+    element: isAuthenticated() && isAdmin() ? <Ma /> : <Login />,
   },
   {
     path: "/requests",
-    element: <Requests />
+    element: isAuthenticated() && isAdmin() ? <Requests /> : <Login />,
   },
   {
     path: "/tickets",
-    element: <Tickets />
+    element: <Tickets />,
   },
   {
     path: "/profile",
-    element: < Profile />
+    element: <Profile />,
   },
   {
     path: "/history",
-    element: <HistoryTickets />
+    element: <HistoryTickets />,
   },
   {
     path: "/login",
-    element: <Login></Login>,
+    element: <Login />,
   },
   {
     path: "/register",
-    element: <Register></Register>,
+    element: <Register />,
   },
 ]);

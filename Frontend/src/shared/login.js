@@ -3,9 +3,11 @@ import "./login.css";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import Axios from "axios";
-
-import { setAuthUser } from "../helper/Storage";
+import { useNavigate } from "react-router-dom";
+import { setAuthUser, getAuthUser } from "../helper/Storage";
 function Login() {
+  const auth = getAuthUser();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -21,6 +23,11 @@ function Login() {
     })
       .then((resp) => {
         setAuthUser(resp.data);
+        if (auth && auth.type == "admin") {
+          navigate("/manageappoint");
+        } else if (auth && auth.type == "traveler") {
+          navigate("/tickets");
+        }
       })
       .catch((e) => {
         const errors = e.response.data;

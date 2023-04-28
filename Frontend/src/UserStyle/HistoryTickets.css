@@ -1,5 +1,5 @@
 #request {
-    background-color: #435d7d;
+    background-color: #435d7d!;
     color: white;
     border-radius: 10px;
     padding-top: 10px;
@@ -45,7 +45,7 @@
     color: #435d7d;
 }
 #accept {
-    background-color: rgb(19 126 19);
+    background-color: rgb(29, 84, 136);
     color: white;
     border-radius: 10px;
     padding-top: 10px;
