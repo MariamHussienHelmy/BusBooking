@@ -34,14 +34,46 @@ const Requests = () => {
       });
   }, [request.reload]);
 
-  const accept = (id) => {
-    Axios.put("http://localhost:4000/request/accept/" + id, {
-      headers: {
-        token: auth.token,
-      },
-    });
+  const completed = (id) => {
+    const count = Axios.get(
+      "http://localhost:4000/request/counttravlers/" + id
+    );
+
+    return count;
   };
-  console.log(auth.token);
+  const max = (id) => {
+    const count = Axios.get("http://localhost:4000/request/maxtravlers/" + id);
+    return count;
+  };
+  const check = (id) => {
+    if (completed(id) >= max(id)) {
+      console.log(completed(id));
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const accept = (id) => {
+    const count = completed(id);
+    const maxNumber = max(id);
+
+    if (count >= maxNumber) {
+      Axios.put("http://localhost:4000/request/complete/" + id, {
+        headers: {
+          token: auth.token,
+        },
+      });
+    } else {
+      Axios.put("http://localhost:4000/request/accept/" + id, {
+        headers: {
+          token: auth.token,
+        },
+      });
+    }
+  };
+
   const reject = (id) => {
     Axios.put("http://localhost:4000/request/decline/" + id);
   };
@@ -94,12 +126,18 @@ const Requests = () => {
                     <td>
                       <td>
                         <div class="btns">
-                          <input
-                            type="submit"
-                            class="btn btn-success"
-                            value="Accept"
-                            onClick={() => accept(t.id)}
-                          />
+                          {!check(t.appid) && (
+                            <input
+                              type="submit"
+                              class="btn btn-success"
+                              value="Accept"
+                              onClick={() => accept(t.id)}
+                            />
+                          )}
+                          {check(t.appid) && (
+                            <input value="Completed" disabled />
+                          )}
+
                           <input
                             type="submit"
                             class="btn btn-danger"

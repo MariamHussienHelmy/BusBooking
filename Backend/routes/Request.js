@@ -103,5 +103,36 @@ router.get("/counttravlers/:id", async (req, res) => {
     res.status(404).json({ ms: "no travelers" });
   }
 });
+router.get("/counttravlers/:id", async (req, res) => {
+  const query = util.promisify(conn.query).bind(conn);
+  const number = await query(
+    "SELECT  count(appointment_id) as number FROM appointment_requests  WHERE appointment_id=?",
+    req.params.id
+  );
+  const num = number[0].number;
 
+  res.status(200).json({
+    number,
+  });
+
+  if (!number) {
+    res.status(404).json({ ms: "no travelers" });
+  }
+});
+router.get("/maxtravlers/:id", async (req, res) => {
+  const query = util.promisify(conn.query).bind(conn);
+
+  const maxnumber = await query(
+    "SELECT max_number_of_travelers FROM appointments WHERE id=?",
+    req.params.id
+  );
+  const mx = maxnumber[0].max_number_of_travelers;
+  res.status(200).json({
+    maxnumber,
+  });
+
+  if (!maxnumber) {
+    res.status(404).json({ ms: "no travelers" });
+  }
+});
 module.exports = router;
