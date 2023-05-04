@@ -7,10 +7,10 @@ const upload = require("../middleware/uploadImages");
 const util = require("util"); // helper
 const fs = require("fs"); // file system
 
-// CREATE MOVIE [ADMIN]
+// CREATE  [ADMIN]
 router.post(
   "/create",
-  //admin,
+  admin,
 
   body("from_where")
     .isString()
@@ -23,7 +23,6 @@ router.post(
   body("ticet_Price"),
 
   body("day_and_time").isLength({ min: 5 }),
-  body("max_number_of_travelers"),
 
   async (req, res) => {
     try {
@@ -38,7 +37,6 @@ router.post(
         from_where: req.body.from_where,
         to_where: req.body.to_where,
         ticket_price: req.body.ticket_price,
-        max_number_of_travelers: req.body.max_number_of_travelers,
         day_and_time: req.body.day_and_time,
       };
 
@@ -57,7 +55,7 @@ router.post(
 // UPDATE Appointment [ADMIN]
 router.put(
   "/:id", // params
-  //admin,
+  admin,
   body("from_where")
     .isString()
     .withMessage("please enter a valid city name")
@@ -69,7 +67,6 @@ router.put(
   body("ticet_Price"),
 
   body("day_and_time").isLength({ min: 5 }),
-  body("max_number_of_travelers"),
 
   async (req, res) => {
     try {
@@ -95,7 +92,6 @@ router.put(
         from_where: req.body.from_where,
         to_where: req.body.to_where,
         ticket_price: req.body.ticket_price,
-        max_number_of_travelers: req.body.max_number_of_travelers,
         day_and_time: req.body.day_and_time,
       };
 

@@ -29,6 +29,7 @@ const { check, validationResult } = require("express-validator");
 
 router.post(
   "/create",
+  admin,
   [
     check("name").notEmpty().withMessage("Name is required"),
     check("email")
@@ -71,12 +72,13 @@ router.post(
 // UPDATE Appointment [ADMIN]
 router.put(
   "/:id", // params
-  //admin,
+  admin,
   body("name")
     .isString()
     .withMessage("please enter a valid name")
-    .isLength({ min: 10, max: 20 })
-    .withMessage("name should be between (10-20) character"),
+    // .isLength({ min: 10, max: 20 })
+    // .withMessage("name should be between (10-20) character")
+    ,
   body("email")
     .isEmail()
     .withMessage("please enter a valid email")
@@ -129,7 +131,7 @@ router.put(
 // DELETE APPOINTMENT [ADMIN]
 router.delete(
   "/:id", // params
-  //admin,
+  admin,
   async (req, res) => {
     try {
       // 1- VALIDATION REQUEST [manual, express validation]

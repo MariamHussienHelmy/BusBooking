@@ -28,8 +28,8 @@ router.post(
   body("name")
     .isString()
     .withMessage("please enter a valid name")
-    .isLength({ min: 10, max: 20 })
-    .withMessage("name should be between (10-20) character"),
+    .isLength({ min: 3, max: 20 })
+    .withMessage("name should be between (3-20) character"),
   body("password")
     .isLength({ min: 8, max: 12 })
     .withMessage("password should be between (8-12) character"),
@@ -61,6 +61,7 @@ router.post(
       const userData = {
         name: req.body.name,
         email: req.body.email,
+        phone: req.body.phone,
         password: await bcrypt.hash(req.body.password, 10),
         token: crypto.randomBytes(16).toString("hex"), // JSON WEB TOKEN, CRYPTO -> RANDOM ENCRYPTION STANDARD
       };

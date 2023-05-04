@@ -9,8 +9,10 @@ import "../AdminStyle/AddTrav.css";
 import "../AdminStyle/EditTrav.css";
 import "../AdminStyle/Editapp.css";
 import axios from "axios";
+import { getAuthUser } from "../helper/Storage";
 
 const Ma = () => {
+  const auth = getAuthUser();
   const [appointment, setAppointment] = useState([]);
 
   useEffect(() => {
@@ -37,7 +39,10 @@ const Ma = () => {
   }
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:4000/appointments/${id}`).then((res) => {
+    axios.delete(`http://localhost:4000/appointments/${id}`,{
+      headers: {
+        token: auth.token,
+      }}).then((res) => {
       setAppointment(
         appointment.filter((appointment) => appointment.id !== id)
       );

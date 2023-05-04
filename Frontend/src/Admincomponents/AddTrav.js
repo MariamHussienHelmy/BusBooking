@@ -2,8 +2,10 @@ import "../AdminStyle/AddTrav.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { getAuthUser } from "../helper/Storage";
 
 const Add = () => {
+  const auth = getAuthUser();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -36,7 +38,11 @@ const Add = () => {
           email,
           phone,
           password,
-        }
+        },
+        {
+          headers: {
+            token: auth.token,
+          }}
       );
       console.log("added succsefuly");
     } catch (err) {

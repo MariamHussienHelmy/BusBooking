@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "../AdminStyle/EditTrav.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
+import { getAuthUser } from "../helper/Storage";
 
 const Editapp = ({ id }) => {
+  const auth = getAuthUser();
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -21,7 +23,10 @@ const Editapp = ({ id }) => {
     e.preventDefault();
     // Update the data using axios
     axios
-      .put(`http://localhost:4000/appointments/${id}`, formData)
+      .put(`http://localhost:4000/appointments/${id}`, formData, {
+        headers: {
+          token: auth.token,
+        },})
       .then((response) => {
         console.log(response.data);
         // Reset the form fields

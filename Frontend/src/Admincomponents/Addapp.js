@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../AdminStyle/AddTrav.css";
 import "../AdminStyle/Addapp.css";
+import { getAuthUser } from "../helper/Storage";
 
 const Addapp = () => {
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const auth = getAuthUser();
+  console.log(auth);
+  const [from_where, setFrom] = useState("");
+  const [to_where, setTo] = useState("");
   const [ticket_price, setPrice] = useState("");
   const [day_and_time, setTime] = useState("");
 
@@ -13,11 +16,16 @@ const Addapp = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:4000/appointments/create", {
-        from,
-        to,
+        from_where,
+        to_where,
         ticket_price,
         day_and_time,
-      });
+        
+      },
+      {
+      headers: {
+        token: auth.token,
+      }});
       console.log("Appointment created successfully!");
       reset();
     } catch (error) {
@@ -69,7 +77,7 @@ const Addapp = () => {
                   type="text"
                   className="form-control"
                   required
-                  value={from}
+                  value={from_where}
                   onChange={(e) => setFrom(e.target.value)}
                 />
               </div>
@@ -79,7 +87,7 @@ const Addapp = () => {
                   type="text"
                   className="form-control"
                   required
-                  value={to}
+                  value={to_where}
                   onChange={(e) => setTo(e.target.value)}
                 />
               </div>

@@ -22,5 +22,5 @@ export const isAuthenticated = () => {
 
 export const isAdmin = () => {
   const user = getAuthUser();
-  return user && user.type === "admin"; // Check if token contains admin role
+  return user && user.type == "admin"; // Check if token contains admin role
 };

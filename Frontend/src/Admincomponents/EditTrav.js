@@ -3,8 +3,10 @@ import axios from "axios";
 import "../AdminStyle/EditTrav.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
+import { getAuthUser } from "../helper/Storage";
 
 const EditTrav = ({ id }) => {
+  const auth = getAuthUser();
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
 
@@ -23,7 +25,10 @@ const EditTrav = ({ id }) => {
     e.preventDefault();
     // Update the data using axios
     axios
-      .put(`http://localhost:4000/traveler/${id}`, formData)
+      .put(`http://localhost:4000/traveler/${id}`, formData, {
+        headers: {
+          token: auth.token,
+        },})
       .then((response) => {
         console.log(response.data);
         // Hide the edit form

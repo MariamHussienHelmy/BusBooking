@@ -8,8 +8,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { getAuthUser } from "../helper/Storage";
 
 const ManagTrav = () => {
+  const auth = getAuthUser();
   function display() {
     const x = document.getElementById("add");
     x.style.display = "block";
@@ -26,7 +28,10 @@ const ManagTrav = () => {
   }
   const [traveler, setTraveler] = useState([]); //destructure usestate to set data as array
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:4000/traveler/${id}`).then((res) => {
+    axios.delete(`http://localhost:4000/traveler/${id}`,{
+      headers: {
+        token: auth.token,
+      }}).then((res) => {
       setTraveler(traveler.filter((traveler) => traveler.id !== id));
       console.log(res.data);
     });
