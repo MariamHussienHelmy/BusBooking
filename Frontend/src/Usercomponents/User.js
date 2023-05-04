@@ -10,7 +10,7 @@ const User = () => {
     <div>
       <div className="all">
         <div className="card">
-          <img src={require("./avt.png")} />
+          <img className="avatar" src={require("./avt.png")} />
 
           <h2>{name}</h2>
 
