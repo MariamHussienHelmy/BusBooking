@@ -9,7 +9,6 @@ const Profile = () => {
             <Header />
             <User />
             <HistoryTickets />
-
             <Footer />
         </div>
     );
