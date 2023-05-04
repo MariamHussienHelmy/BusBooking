@@ -8,8 +8,8 @@ const User = () => {
   const phone = user.phone;
   return (
     <div>
-      <div class="all">
-        <div class="card">
+      <div className="all">
+        <div className="card">
           <img src={require("./avt.png")} />
 
           <h2>{name}</h2>

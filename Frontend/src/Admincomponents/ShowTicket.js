@@ -15,7 +15,7 @@ const ShowTicket = (props) => {
   return (
     <>
       {ticket.map((ticket) => (
-        <div class="wrappers">
+        <div className="wrappers">
           <h2>ticket name</h2>
           <hr />
           <h3>From :{ticket.from_where}</h3>

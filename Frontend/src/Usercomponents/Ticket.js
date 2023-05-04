@@ -17,7 +17,7 @@ const Ticket = (props) => {
   };
 
   return (
-    <div class="wrappers">
+    <div className="wrappers">
       <h2>{props.to_where} Ticket</h2>
       <hr />
       <h3>From : {props.from_where}</h3>

@@ -64,14 +64,14 @@ const Add = () => {
         left: 0,
       }}
     >
-      <div class="modal-dialog">
-        <div class="modal-content">
+      <div className="modal-dialog">
+        <div className="modal-content">
           <form onSubmit={onSubmit}>
-            <div class="modal-header headadd">
-              <h4 class="modal-title">Add Traveler</h4>
+            <div className="modal-header headadd">
+              <h4 className="modal-title">Add Traveler</h4>
               <button
                 type="button"
-                class="close btnx"
+                className="close btnx"
                 data-dismiss="modal"
                 aria-hidden="true"
                 onClick={hide}
@@ -80,43 +80,43 @@ const Add = () => {
               </button>
             </div>
             <hr />
-            <div class="modal-body ">
-              <div class="form-group bodyadd">
+            <div className="modal-body ">
+              <div className="form-group bodyadd">
                 <label htmlFor="name">Name</label>
                 <input
                   id="name"
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={name}
                   onChange={nameChangeHandler}
                 />
               </div>
-              <div class="form-group bodyadd">
+              <div className="form-group bodyadd">
                 <label htmlFor="email">Email</label>
                 <input
                   id="email"
                   type="email"
-                  class="form-control"
+                  className="form-control"
                   value={email}
                   onChange={emailChangeHandler}
                 />
               </div>
-              <div class="form-group bodyadd">
+              <div className="form-group bodyadd">
                 <label htmlFor="password">Password</label>
                 <input
                   id="password"
                   type="password"
-                  class="form-control"
+                  className="form-control"
                   value={password}
                   onChange={passwordChangeHandler}
                 />
               </div>
-              <div class="form-group bodyadd">
+              <div className="form-group bodyadd">
                 <label htmlFor="phone">Phone</label>
                 <input
                   id="phone"
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={phone}
                   onChange={phoneChangeHandler}
                 />

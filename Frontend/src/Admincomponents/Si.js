@@ -12,41 +12,41 @@ const s = () => {
   };
   return (
     <div>
-      <div class="sidebar open">
-        <div class="logo-details">
-          <i class="bx bxl-c-plus-plus icon"></i>
-          <div class="logo_name">Bus Booking</div>
-          <i class="bx bx-menu-alt-right" id="btn"></i>
+      <div className="sidebar open">
+        <div className="logo-details">
+          <i className="bx bxl-c-plus-plus icon"></i>
+          <div className="logo_name">Bus Booking</div>
+          <i className="bx bx-menu-alt-right" id="btn"></i>
         </div>
-        <ul class="nav-list">
+        <ul className="nav-list">
           <li>
             <Link to="/manageappoint">
-              <i class="bx bx-grid-alt"></i>
-              <span class="links_name">Appointments</span>
+              <i className="bx bx-grid-alt"></i>
+              <span className="links_name">Appointments</span>
             </Link>
           </li>
 
           <li>
             <Link to="/managetrav">
-              <i class="bx bx-user"></i>
-              <span class="links_name">Travelers</span>
+              <i className="bx bx-user"></i>
+              <span className="links_name">Travelers</span>
             </Link>
           </li>
           <li>
             <Link to="/requests">
-              <i class="bx bx-chat"></i>
-              <span class="links_name">Requests</span>
+              <i className="bx bx-chat"></i>
+              <span className="links_name">Requests</span>
             </Link>
           </li>
-          <li class="profile">
-            <div class="profile-details">
-              <div class="name_job">
+          <li className="profile">
+            <div className="profile-details">
+              <div className="name_job">
                 <div>
                   {auth && (
                     <Link to="/login" onClick={logout}>
                       <div
                         id="sign"
-                        class="butto"
+                        className="butto"
                         style={{ backgroundColor: "#1d1b31" }}
                       >
                         {" "}
@@ -57,7 +57,7 @@ const s = () => {
                   {!auth && (
                     <Link
                       to="/login"
-                      class="butto"
+                      className="butto"
                       style={{ backgroundColor: "#1d1b31" }}
                     >
                       {" "}

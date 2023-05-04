@@ -38,17 +38,17 @@ const Tickets = () => {
     <div>
       <Header />
       <form onSubmit={searchMovies}>
-        <div class="wrap">
-          <div class="search">
+        <div className="wrap">
+          <div className="search">
             <input
               type="text"
-              class="searchTerm"
+              className="searchTerm"
               placeholder="What are you looking for?"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button type="submit" class="searchButton">
-              <i class="fa fa-search"></i>
+            <button type="submit" className="searchButton">
+              <i className="fa fa-search"></i>
             </button>
           </div>
         </div>

@@ -3,7 +3,7 @@ import "../UserStyle/Footer.css";
 const Footer = () => {
     return (
         <footer>
-            <p>Copyright &copy; BusTicket.com</p>
+            <p>Copyright &copy; FCAIH</p>
         </footer>
     );
 };

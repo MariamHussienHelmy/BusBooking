@@ -37,7 +37,7 @@ const HistoryTickets = () => {
   return (
     <>
       {history.results.map((t) => (
-        <div class="wrappers">
+        <div className="wrappers">
           <h2>{t.to_where} ticket</h2>
           <hr />
           <h3>From : {t.from_where}</h3>

@@ -51,7 +51,7 @@ const ManagTrav = () => {
       <Si />
       <head />
       <div
-        class="container-xl "
+        className="container-xl "
         style={{
           top: "30px",
           left: 300,
@@ -60,22 +60,22 @@ const ManagTrav = () => {
         }}
       >
         <div>
-          <div class="table-wrapper">
-            <div class="table-title">
-              <div class="row">
-                <div class="col-sm-6">
+          <div className="table-wrapper">
+            <div className="table-title">
+              <div className="row">
+                <div className="col-sm-6">
                   <h2>
                     Manage <b>Travelers </b>
                   </h2>
                 </div>
-                <div class="col-sm-6 btnadd">
-                  <button class="btn btn-success" onClick={display}>
-                    <i class="material-icons">&#xE147;</i> <span> Add</span>
+                <div className="col-sm-6 btnadd">
+                  <button className="btn btn-success" onClick={display}>
+                    <i className="material-icons">&#xE147;</i> <span> Add</span>
                   </button>
                 </div>
               </div>
             </div>
-            <table class="table table-striped table-hover">
+            <table className="table table-striped table-hover">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -93,7 +93,7 @@ const ManagTrav = () => {
                     <td>{traveler.phone}</td>
                     <td>
                       <Link to={`/show/${traveler.id}`}>
-                        <button class="btn btn-success">Show</button>
+                        <button className="btn btn-success">Show</button>
                       </Link>
                     </td>
 

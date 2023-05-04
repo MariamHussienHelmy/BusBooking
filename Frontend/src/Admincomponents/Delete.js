@@ -23,21 +23,21 @@ const Delete = () => {
             position: "fixed",
             left: 0
         }} >
-            <div class="modal-dialog">
-                <div class="modal-content">
+            <div className="modal-dialog">
+                <div className="modal-content">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div class="modal-header headdelete">
-                            <h4 class="modal-title">Delete Employee</h4>
-                            <button type="button" class="close btnx" data-dismiss="modal" aria-hidden="true" onClick={hide}>&times;</button>
+                        <div className="modal-header headdelete">
+                            <h4 className="modal-title">Delete Employee</h4>
+                            <button type="button" className="close btnx" data-dismiss="modal" aria-hidden="true" onClick={hide}>&times;</button>
                         </div>
                         <hr />
-                        <div class="modal-body bodydelete">
+                        <div className="modal-body bodydelete">
                             <p>Are you sure you want to delete these Records?</p>
-                            <p class="text-warning"><small>This action cannot be undone.</small></p>
+                            <p className="text-warning"><small>This action cannot be undone.</small></p>
                         </div>
-                        <div class="modal-footer footerdelete">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" onClick={hide} />
-                            <input type="submit" class="btn btn-danger" value="Delete" />
+                        <div className="modal-footer footerdelete">
+                            <input type="button" className="btn btn-default" data-dismiss="modal" value="Cancel" onClick={hide} />
+                            <input type="submit" className="btn btn-danger" value="Delete" />
                         </div>
                     </form>
                 </div>
