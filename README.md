@@ -1,3 +1,3 @@
 # BusBooking
 > The Bus Booking project is a web-based application for booking bus tickets. Users can log in as either an admin or a traveler, with different features and functionalities available to each type of user. Admin users can manage appointments, bus destinations, and travelers, and view the history of all traveler requests for all appointments.
-> Traveler users can view and filter available appointments, send a request to the admin for a desired appointment, and view their own history of appointment searches. The project uses MySQL for database management, Node.js and Express.js for the backend, and React.js for the frontend.
+> Traveler users can view and filter available appointments, send a request to the admin for a desired appointment, and view their own history of appointment searches. The project uses MySQL for database management, Node.js and Express.js for the backend, and React.js for the frontend
