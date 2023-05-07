@@ -1,4 +1,4 @@
-#Bus Booking
+# Bus Booking
 
 The Bus Booking project is a web-based application for booking bus tickets. Users can log in as either an admin or a traveler, with different features and functionalities available to each type of user.
 
