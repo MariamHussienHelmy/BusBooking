@@ -1,148 +1,137 @@
-import React, { useEffect, useState } from "react";
-import Si from "./Si";
-import "../AdminStyle/Mangeapp.css";
-import Addapp from "./Addapp";
-import Editapp from "./Editapp";
-import Delete from "./Delete";
-import "../AdminStyle/Addapp.css";
-import "../AdminStyle/AddTrav.css";
-import "../AdminStyle/EditTrav.css";
-import "../AdminStyle/Editapp.css";
-import axios from "axios";
-import { getAuthUser } from "../helper/Storage";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const Ma = () => {
-  const auth = getAuthUser();
-  const [appointment, setAppointment] = useState([]);
+import SideBar from './SideBar';
+import Addapp from './Addapp';
+import Editapp from './Editapp';
 
-  useEffect(() => {
-    axios.get(`http://localhost:4000/appointments/all`).then((res) => {
-      setAppointment(res.data);
-      console.log(res.data);
-    });
-  }, []);
+import { getAuthUser } from '../helper/Storage';
 
-  function display() {
-    var x = document.getElementById("addapp");
-    x.style.display = "block";
-  }
-  const [editId, setEditId] = useState(null);
-  function displayedit(id) {
-    setEditId(id);
-    var x = document.getElementById("editapp");
-    x.style.display = "block";
-  }
+// import '../AdminStyle/Mangeapp.css';
+import classes from '../AdminStyle/MangeAppointments.module.css';
+import '../App.css';
 
-  function displaydelete() {
-    var x = document.getElementById("delete");
-    x.style.display = "block";
-  }
+const ManageAppointments = () => {
+	const [appointments, setAppointments] = useState([]);
+	const [editId, setEditId] = useState(null);
+	const auth = getAuthUser();
 
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:4000/appointments/${id}`,{
-      headers: {
-        token: auth.token,
-      }}).then((res) => {
-      setAppointment(
-        appointment.filter((appointment) => appointment.id !== id)
-      );
-      console.log(res.data);
-    });
-  };
+	const getAllAppointments = async () => {
+		try {
+			const response = await axios.get(
+				`http://localhost:4000/appointments/all`
+			);
+			setAppointments(response.data);
+			console.log(response.data);
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
-  return (
-    <>
-      <Si />
+	useEffect(() => {
+		getAllAppointments();
+	}, []);
 
-      <div
-        className="container-xl "
-        id="tble"
-        style={{
-          top: "30px",
-          left: 300,
-          position: "fixed",
-          width: 1200,
-        }}
-      >
-        <div>
-          <div className="table-wrapper ">
-            <div className="table-title">
-              <div className="row">
-                <div className="col-sm-6">
-                  <h2>
-                    Manage <b>Appointments </b>
-                  </h2>
-                </div>
-                <div className="col-sm-6">
-                  <a
-                    className="btn btn-success"
-                    data-toggle="modal"
-                    onClick={display}
-                  >
-                    <i className="material-icons">&#xE147;</i> <span>Add</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <table className="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Ticket Price</th>
-                  <th>Day and Time</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointment.map((appointment) => (
-                  <tr key={appointment.id}>
-                    <td>{appointment.	from_where}</td>
-                    <td>{appointment.to_where}</td>
-                    <td>{appointment.ticket_price} EGP</td>
-                    <td>{appointment.day_and_time}</td>
-                    <td>
-                      <a className="edit" data-toggle="modal">
-                        <i
-                          className="material-icons"
-                          data-toggle="tooltip"
-                          title="Edit"
-                          onClick={() => displayedit(appointment.id)}
-                        >
-                          &#xE254;
-                        </i>
-                      </a>
-                      <a className="delete" data-toggle="modal">
-                        <i
-                          className="material-icons"
-                          data-toggle="tooltip"
-                          title="Delete"
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                "Are you sure you wish to delete this appointment?"
-                              )
-                            )
-                              handleDelete(appointment.id);
-                          }}
-                        >
-                          &#xE872;
-                        </i>
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+	function display() {
+		const x = document.getElementById('add-appointment-modal');
+		x.style.display = 'flex';
+	}
+	function displayedit(id) {
+		setEditId(id);
+		const x = document.getElementById('edit-modal');
+		x.style.display = 'flex';
+	}
+	const handleDelete = async id => {
+		try {
+			await axios.delete(`http://localhost:4000/appointments/${id}`, {
+				headers: {
+					token: auth.token,
+				},
+			});
+			setAppointments(
+				appointments.filter(appointment => appointment.id !== id)
+			);
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
-      <Addapp />
-      <Editapp id={editId} />
-      <Delete />
-    </>
-  );
+	return (
+		<div className={classes.wrapper}>
+			<SideBar />
+
+			<main className={classes.main}>
+				<h2>Manage Appointments</h2>
+
+				{appointments.length > 0 && (
+					<table className='table table-striped table-hover'>
+						<thead>
+							<tr>
+								<th>From</th>
+								<th>To</th>
+								<th>Ticket Price</th>
+								<th>Day and Time</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{appointments.map(appointment => (
+								<tr key={appointment.id}>
+									<td>{appointment.from_where}</td>
+									<td>{appointment.to_where}</td>
+									<td>{appointment.ticket_price} EGP</td>
+									<td>
+										{appointment.day_and_time.toLocaleString('en-GB', {
+											timeZone: 'EAT',
+										})}
+									</td>
+									<td>
+										<div className={classes['btn-box']}>
+											<button className='edit' data-toggle='modal'>
+												<i
+													className='material-icons'
+													title='Edit'
+													onClick={() => displayedit(appointment.id)}>
+													&#xE254;
+												</i>
+											</button>
+											<button className='delete' data-toggle='modal'>
+												<i
+													className='material-icons'
+													title='Delete'
+													onClick={() => {
+														if (
+															window.confirm(
+																'Are you sure you wish to delete this appointment?'
+															)
+														)
+															handleDelete(appointment.id);
+													}}>
+													&#xE872;
+												</i>
+											</button>
+										</div>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				)}
+				{appointments.length === 0 && (
+					<h2 className='no-data'>No Appointments Found!</h2>
+				)}
+				<button
+					className='btn btn-success margin-bottom-md'
+					data-toggle='modal'
+					onClick={display}>
+					Add Appointment
+				</button>
+			</main>
+
+			<Addapp OnAddAppointment={getAllAppointments} />
+			<Editapp id={editId} OnEditAppointment={getAllAppointments} />
+		</div>
+	);
 };
 
-export default Ma;
+export default ManageAppointments;

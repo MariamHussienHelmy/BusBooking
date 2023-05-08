@@ -42,7 +42,7 @@ const Register = () => {
 
 	const submitHandler = async event => {
 		// Prevent reload after form submission
-		event.preventDefault();
+		event.preventDefault();//
 
 		const data = { name, phone, email, password };
 		try {
@@ -51,10 +51,10 @@ const Register = () => {
 				data
 			);
 
-			console.log(response);
+			//console.log(response);
 			// console.log('submitted');
 
-			navigate('/login');
+			navigate('/login');//
 		} catch (error) {
 			// handle error response
 			console.log(error);

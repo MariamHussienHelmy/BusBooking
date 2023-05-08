@@ -39,13 +39,10 @@ function Login() {
 		try {
 			const result = await Axios.post('http://localhost:4000/auth/login', data);
 
-			console.log(result.data.type);
-			// console.log(result.data);
 			setAuthUser(result.data);
-			console.log(auth);
-			if (result.data.type == 'admin') {
+			if (result.data.type.toString() === 'admin') {
 				console.log('it should navigate to ManageAppointments');
-				navigate('/manageappoint');
+				navigate('/managetrav');
 			} else {
 				navigate('/tickets');
 			}
