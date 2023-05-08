@@ -1,146 +1,130 @@
-import "../AdminStyle/AddTrav.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { getAuthUser } from "../helper/Storage";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { getAuthUser } from '../helper/Storage';
 
-const Add = () => {
-  const auth = getAuthUser();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
+import classes from '../AdminStyle/AddTrav.module.css';
 
-  const nameChangeHandler = (e) => {
-    setName(e.target.value);
-  };
+const Add = ({ onAddTrav }) => {
+	const auth = getAuthUser();
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [phone, setPhone] = useState('');
+	const [password, setPassword] = useState('');
 
-  const emailChangeHandler = (e) => {
-    setEmail(e.target.value);
-  };
+	const nameChangeHandler = e => {
+		setName(e.target.value);
+	};
 
-  const passwordChangeHandler = (e) => {
-    setPassword(e.target.value);
-  };
+	const emailChangeHandler = e => {
+		setEmail(e.target.value);
+	};
 
-  const phoneChangeHandler = (e) => {
-    setPhone(e.target.value);
-  };
+	const passwordChangeHandler = e => {
+		setPassword(e.target.value);
+	};
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
+	const phoneChangeHandler = e => {
+		setPhone(e.target.value);
+	};
 
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/traveler/create",
-        {
-          name,
-          email,
-          phone,
-          password,
-        },
-        {
-          headers: {
-            token: auth.token,
-          }}
-      );
-      console.log("added succsefuly");
-    } catch (err) {
-      console.log(err);
-    }
-  };
+	const submitHandler = async event => {
+		event.preventDefault();
 
-  function hide() {
-    const x = document.getElementById("add");
-    x.style.display = "none";
-  }
+		try {
+			await axios.post(
+				'http://localhost:4000/traveler/create',
+				{
+					name,
+					email,
+					phone,
+					password,
+				},
+				{
+					headers: {
+						token: auth.token,
+					},
+				}
+			);
+			onAddTrav();
 
-  return (
-    <div
-      id="add"
-      style={{
-        top: "0px",
-        position: "fixed",
-        left: 0,
-      }}
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <form onSubmit={onSubmit}>
-            <div className="modal-header headadd">
-              <h4 className="modal-title">Add Traveler</h4>
-              <button
-                type="button"
-                className="close btnx"
-                data-dismiss="modal"
-                aria-hidden="true"
-                onClick={hide}
-              >
-                &times;
-              </button>
-            </div>
-            <hr />
-            <div className="modal-body ">
-              <div className="form-group bodyadd">
-                <label htmlFor="name">Name</label>
-                <input
-                  id="name"
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={nameChangeHandler}
-                />
-              </div>
-              <div className="form-group bodyadd">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  className="form-control"
-                  value={email}
-                  onChange={emailChangeHandler}
-                />
-              </div>
-              <div className="form-group bodyadd">
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={passwordChangeHandler}
-                />
-              </div>
-              <div className="form-group bodyadd">
-                <label htmlFor="phone">Phone</label>
-                <input
-                  id="phone"
-                  type="text"
-                  className="form-control"
-                  value={phone}
-                  onChange={phoneChangeHandler}
-                />
-              </div>
-            </div>
+			// Clear the form input
+			setName('');
+			setEmail('');
+			setPhone('');
+			setPassword('');
 
-            <div class="modal-footer footeradd">
-              <button
-                type="button"
-                className="btn btn-default"
-                // data-dismiss="modal"
-                onClick={hide}
-              >
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-success" onClick={hide}>
-                Add
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
+			hideModal();
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	function hideModal() {
+		const x = document.getElementById('add-modal');
+		x.style.display = 'none';
+	}
+
+	return (
+		<form
+			id='add-modal'
+			className={classes['add-modal']}
+			onSubmit={submitHandler}>
+			<h4>Add Traveler</h4>
+			<div>
+				<label htmlFor='name'>Name</label>
+				<input
+					id='name'
+					type='text'
+					className='form-control'
+					value={name}
+					onChange={nameChangeHandler}
+				/>
+			</div>
+			<div>
+				<label htmlFor='email'>Email</label>
+				<input
+					id='email'
+					type='email'
+					className='form-control'
+					value={email}
+					onChange={emailChangeHandler}
+				/>
+			</div>
+			<div>
+				<label htmlFor='password'>Password</label>
+				<input
+					id='password'
+					type='password'
+					className='form-control'
+					value={password}
+					onChange={passwordChangeHandler}
+				/>
+			</div>
+			<div>
+				<label htmlFor='phone'>Phone</label>
+				<input
+					id='phone'
+					type='text'
+					className='form-control'
+					value={phone}
+					onChange={phoneChangeHandler}
+				/>
+			</div>
+
+			<div className={classes['btn-box']}>
+				<button
+					className={classes['btn-cancel']}
+					type='button'
+					data-dismiss='modal'
+					onClick={hideModal}>
+					Cancel
+				</button>
+				<button className={classes['btn-save']} type='submit'>
+					Add
+				</button>
+			</div>
+		</form>
+	);
 };
 
 export default Add;

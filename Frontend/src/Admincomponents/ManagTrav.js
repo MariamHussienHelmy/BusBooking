@@ -1,143 +1,129 @@
-import React, { useEffect, useState } from "react";
-import "../AdminStyle/Table.css";
-import Si from "./Si";
-import Add from "./AddTrav";
-import Edit from "./EditTrav";
-import Delete from "./Delete";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { getAuthUser } from "../helper/Storage";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import SideBar from './SideBar';
+import Add from './AddTrav';
+import Edit from './EditTrav';
+import axios from 'axios';
+import { getAuthUser } from '../helper/Storage';
+
+import classes from '../AdminStyle/ManageTrav.module.css';
+import '../App.css';
 
 const ManagTrav = () => {
-  const auth = getAuthUser();
-  function display() {
-    const x = document.getElementById("add");
-    x.style.display = "block";
-  }
-  const [editId, setEditId] = useState(null);
-  function displayedit(id) {
-    setEditId(id);
-    const x = document.getElementById("edit");
-    x.style.display = "block";
-  }
-  function displaydelete() {
-    const x = document.getElementById("delete");
-    x.style.display = "block";
-  }
-  const [traveler, setTraveler] = useState([]); //destructure usestate to set data as array
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:4000/traveler/${id}`,{
-      headers: {
-        token: auth.token,
-      }}).then((res) => {
-      setTraveler(traveler.filter((traveler) => traveler.id !== id));
-      console.log(res.data);
-    });
-  };
+	const [travelers, setTravelers] = useState([]);
+	const [editId, setEditId] = useState(null);
 
-  useEffect(() => {
-    //usestate to store data && useeffect to get data every each request
-    //axios to get api from db
-    axios.get("http://localhost:4000/traveler/all").then((res) => {
-      console.log("sucsess");
-      setTraveler(res.data);
-      console.log(res.data);
-    });
-  }, []);
-  return (
-    <div>
-      <Si />
-      <head />
-      <div
-        className="container-xl "
-        style={{
-          top: "30px",
-          left: 300,
-          position: "fixed",
-          width: 1200,
-        }}
-      >
-        <div>
-          <div className="table-wrapper">
-            <div className="table-title">
-              <div className="row">
-                <div className="col-sm-6">
-                  <h2>
-                    Manage <b>Travelers </b>
-                  </h2>
-                </div>
-                <div className="col-sm-6 btnadd">
-                  <button className="btn btn-success" onClick={display}>
-                    <i className="material-icons">&#xE147;</i> <span> Add</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <table className="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>History of requests</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {traveler.map((traveler) => (
-                  <tr key={traveler.id}>
-                    <td>{traveler.name}</td>
-                    <td>{traveler.email}</td>
-                    <td>{traveler.phone}</td>
-                    <td>
-                      <Link to={`/show/${traveler.id}`}>
-                        <button className="btn btn-success">Show</button>
-                      </Link>
-                    </td>
+	const auth = getAuthUser();
 
-                    <td>
-                      <a className="edit" data-toggle="modal">
-                        <i
-                          className="material-icons"
-                          data-toggle="tooltip"
-                          title="Edit"
-                          onClick={() => displayedit(traveler.id)}
-                        >
-                          &#xE254;
-                        </i>
-                      </a>
-                      <a className="delete" data-toggle="modal">
-                        <i
-                          className="material-icons"
-                          data-toggle="tooltip"
-                          title="Delete"
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                "Are you sure you wish to delete this traveler?"
-                              )
-                            )
-                              handleDelete(traveler.id);
-                          }}
-                        >
-                          &#xE872;
-                        </i>
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <Add />
-      <Edit id={editId} />
-      <Delete />
-    </div>
-  );
+	function displayAdd() {
+		const x = document.getElementById('add-modal');
+		x.style.display = 'flex';
+	}
+
+	function displayEdit(id) {
+		setEditId(id);
+		const x = document.getElementById('edit-modal');
+		x.style.display = 'flex';
+	}
+
+	const handleDelete = async id => {
+		try {
+			await axios.delete(`http://localhost:4000/traveler/${id}`, {
+				headers: {
+					token: auth.token,
+				},
+			});
+			setTravelers(travelers.filter(traveler => traveler.id !== id));
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const fetchAllUsers = async () => {
+		const users = await axios.get('http://localhost:4000/traveler/all');
+		setTravelers(users.data);
+	};
+
+	useEffect(() => {
+		fetchAllUsers();
+	}, []);
+
+	return (
+		<div className={classes.wrapper}>
+			<SideBar />
+			<main className={classes.main}>
+				<h2>Manage Travelers</h2>
+				{travelers.length > 0 && (
+					<table className='table table-striped table-hover'>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Phone</th>
+								<th>History of requests</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{travelers.map(traveler => (
+								<tr key={traveler.id}>
+									<td>{traveler.name}</td>
+									<td>{traveler.email}</td>
+									<td>{traveler.phone}</td>
+									<td>
+										<Link to={`/show/${traveler.id}`}>
+											<button className='btn btn-success'>Show</button>
+										</Link>
+									</td>
+
+									<td>
+										<div className={classes['btn-box']}>
+											<button className='edit' data-toggle='modal'>
+												<i
+													className='material-icons'
+													data-toggle='tooltip'
+													title='Edit'
+													onClick={() => displayEdit(traveler.id)}>
+													&#xE254;
+												</i>
+											</button>
+											<button className='delete' data-toggle='modal'>
+												<i
+													className='material-icons'
+													data-toggle='tooltip'
+													title='Delete'
+													onClick={() => {
+														if (
+															window.confirm(
+																'Are you sure you wish to delete this traveler?'
+															)
+														)
+															handleDelete(traveler.id);
+													}}>
+													&#xE872;
+												</i>
+											</button>
+										</div>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				)}
+				{travelers.length === 0 && (
+					<h2 className='no-data'>No Travelers Found!</h2>
+				)}
+				<button
+					className='btn btn-success margin-bottom-md'
+					onClick={displayAdd}>
+					Add Traveler
+				</button>
+				<Add onAddTrav={fetchAllUsers} />
+				<Edit id={editId} onEditTrav={fetchAllUsers} />
+			</main>
+		</div>
+	);
 };
 
 export default ManagTrav;

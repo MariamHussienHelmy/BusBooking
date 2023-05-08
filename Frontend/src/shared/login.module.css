@@ -1,19 +1,12 @@
-body {
-	min-height: 100vh;
-	background: #f6f5f7;
-	margin: 0;
-	padding: 0;
-
-	box-sizing: border-box;
-	font-family: 'Poppins', sans-serif;
-}
-
 .wrapper {
-	margin-block: 150px 50px;
+	margin-block: 65px;
+	margin-inline: auto;
 	background: #fff;
 	padding: 34px;
 	border-radius: 6px;
 	box-shadow: 0 0px 10px 10px rgba(0, 0, 0, 0.2);
+
+	max-width: 25rem;
 }
 
 .wrapper h2 {

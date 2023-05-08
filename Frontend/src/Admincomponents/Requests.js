@@ -1,131 +1,123 @@
-import React from "react"; 
-import Si from "./Si"; 
-import "../AdminStyle/Request.css"; 
-import Axios from "axios"; 
-import { getAuthUser } from "../helper/Storage"; 
-import { useState, useEffect } from "react"; 
-const Requests = () => { 
-  const auth = getAuthUser(); 
-  const [request, setrequest] = useState({ 
-    loading: true, 
-    results: [], 
-    err: null, 
-    reload: 0, 
-  }); 
- 
-  useEffect(() => { 
-    setrequest({ ...request, loading: true }); 
-    Axios.get("http://localhost:4000/request/all") 
-      .then((resp) => { 
-        //console.log(resp); 
-        setrequest({ 
-          ...request, 
-          results: resp.data, 
-          loading: false, 
-          err: null, 
-        }); 
-      }) 
-      .catch((err) => { 
-        setrequest({ 
-          ...request, 
-          loading: false, 
- 
-          err: " something went wrong, please try again later ! ", 
-        }); 
-      }); 
-  }, [request.reload]); 
- 
-  const accept = (appid, reqid) => { 
- 
-    Axios.put("http://localhost:4000/request/accept/" + appid + "/" + reqid).then((resp) => { 
- 
-      setrequest({ ...request, loading: true, reload: request.reload + 1 }); 
- 
-    }) 
-  }; 
- 
-  const reject = (id) => { 
-    Axios.put("http://localhost:4000/request/decline/" + id); 
-    setrequest({ ...request, loading: true, reload: request.reload + 1 }); 
-  }; 
-  return ( 
-    <> 
-      <Si /> 
- 
-      <div 
-        className="container-xl " 
-        id="tble" 
-        style={{ 
-          top: "30px", 
-          left: 300, 
-          position: "fixed", 
-          width: 1200, 
-        }} 
-      > 
-        <div> 
-          <div className="table-wrapper "> 
-            <div className="table-title"> 
-              <div className="row"> 
-                <div className="col-sm-6"> 
-                  <h2> 
-                    Manage <b>Requests</b> 
-                  </h2> 
-                </div> 
-              </div> 
-            </div> 
- 
-            <table className="table table-striped table-hover"> 
-              <thead> 
-                <tr> 
-                  <th>Traveler</th> 
-                  <th>From</th> 
-                  <th>To</th> 
- 
-                  <th>Day and Time</th> 
-                  <th>Number of travelers</th> 
-                  <th>Maxmium</th> 
-                  <th>Status</th> 
-                  <th>Actions</th> 
-                </tr> 
-              </thead> 
-              <tbody> 
-                {request.results.map((t) => ( 
-                  <tr > 
-                    <td>{t.email}</td> 
-                    <td>{t.from_where}</td> 
-                    <td> {t.to_where}</td> 
-                    <td>{t.day_and_time}</td> 
-                    <td>{t.number_of_traveler}</td> 
-                    <td>{t.max_number_of_travelers}</td> 
- 
-                    <td>{t.status}</td> 
-                    <td> 
-                      <td> 
-                        <div className="btns"> 
-                          <input 
-                            type="submit" 
-                            className="btn btn-success" 
-                            value="Accept" 
-                            onClick={() => accept(t.appid, t.id)} 
-                          /> 
-                          <input 
-                            type="submit" 
-                            className="btn btn-danger" 
-                            value="reject" 
-                            onClick={() => reject(t.id)} 
-                          /> 
-                        </div> 
-                      </td> 
-                    </td> 
-                  </tr> 
-                ))} 
-              </tbody> 
-            </table> 
-          </div> 
-        </div> 
-      </div> 
-    </> 
-  ); 
-}; 
- 
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
+
+import SideBar from './SideBar';
+
+import classes from '../AdminStyle/Request.module.css';
+
+const Requests = () => {
+	const [requests, setrequests] = useState({
+		loading: true,
+		results: [],
+		err: null,
+		reload: 0,
+	});
+
+	const fetchAllRequest = async () => {
+		setrequests({ ...requests, loading: true });
+
+		try {
+			const resposne = await Axios.get('http://localhost:4000/request/all');
+
+			setrequests({
+				...requests,
+				results: resposne.data,
+				loading: false,
+				err: null,
+			});
+		} catch (error) {
+			setrequests({
+				...requests,
+				loading: false,
+				err: error.message || 'Something went wrong, please try again later!',
+			});
+		}
+	};
+
+	useEffect(() => {
+		fetchAllRequest();
+	}, [requests.reload]);
+
+	const acceptRequest = async (appid, reqid) => {
+		try {
+			await Axios.put(
+				'http://localhost:4000/request/accept/' + appid + '/' + reqid
+			);
+			setrequests({ ...requests, loading: true, reload: requests.reload + 1 });
+			
+			fetchAllRequest();
+			document.getElementById("diableacc").disabled = true;
+			document.getElementById("diablerej").disabled = true;
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const rejectRequest = async id => {
+		await Axios.put('http://localhost:4000/request/decline/' + id);
+		setrequests({ ...requests, loading: true, reload: requests.reload + 1 });
+		
+		fetchAllRequest();
+		document.getElementById("diableacc").disabled = true;
+    	document.getElementById("diablerej").disabled = true;
+	};
+	return (
+		<div className={classes.wrapper}>
+			<SideBar />
+
+			<main className={classes.main}>
+				<h2>Manage Requests</h2>
+
+				<table className='table table-striped table-hover'>
+					<thead>
+						<tr>
+							<th>Traveler</th>
+							<th>From</th>
+							<th>To</th>
+
+							<th>Day and Time</th>
+							<th>Number of travelers</th>
+							<th>Maxmium</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{requests.results.map(t => (
+							<tr key={t.id}>
+								<td>{t.email}</td>
+								<td>{t.from_where}</td>
+								<td> {t.to_where}</td>
+								<td>{t.day_and_time}</td>
+								<td>{t.number_of_traveler}</td>
+								<td>{t.max_number_of_travelers}</td>
+
+								<td>{t.status}</td>
+								<td>
+									<div className={classes['btn-box']}>
+										<button
+											type='submit'
+											id="diableacc"
+											className='btn btn-success'
+											onClick={() => acceptRequest(t.appid, t.id)}>
+											Accept
+										</button>
+										<button
+											type='submit'
+											id="diablerej"
+											className='btn btn-danger'
+											onClick={() => rejectRequest(t.id)}>
+											Reject
+										</button>
+									</div>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</main>
+		</div>
+	);
+};
+
 export default Requests;

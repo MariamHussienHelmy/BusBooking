@@ -1,17 +1,12 @@
-body {
-	background: #f6f5f7;
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Poppins', sans-serif;
-}
-
 .wrapper {
-	margin-block: 200px 100px;
+	margin-block: 65px;
 	background: #fff;
 	padding: 34px;
 	border-radius: 6px;
 	box-shadow: 0 0px 10px 10px rgba(0, 0, 0, 0.2);
+
+	margin-inline: auto;
+	max-width: 30rem;
 }
 
 .wrapper h2 {

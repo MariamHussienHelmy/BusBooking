@@ -1,119 +1,98 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "../AdminStyle/EditTrav.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, useNavigate } from "react-router-dom";
-import { getAuthUser } from "../helper/Storage";
+import React, { useState, useEffect } from 'react';
 
-const EditTrav = ({ id }) => {
-  const auth = getAuthUser();
-  const [formData, setFormData] = useState({});
-  const navigate = useNavigate();
+import axios from 'axios';
+import { getAuthUser } from '../helper/Storage';
 
-  useEffect(() => {
-    // Fetch the data using axios and update the state
-    axios
-      .get(`http://localhost:4000/traveler/getone/${id}`)
-      .then((response) => {
-        console.log(response);
-        setFormData(response.data);
-      })
-      .catch((error) => console.log(error));
-  }, [id]);
+import classes from '../AdminStyle/EditTrav.module.css';
+import '../App.css';
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    // Update the data using axios
-    axios
-      .put(`http://localhost:4000/traveler/${id}`, formData, {
-        headers: {
-          token: auth.token,
-        },})
-      .then((response) => {
-        console.log(response.data);
-        // Hide the edit form
-        hideEdit();
-        // Navigate to the manage travelers page
-        navigate("/managetrav", { state: { updated: true } });
-      })
-      .catch((error) => console.log(error));
-  }
+const EditTrav = ({ id, onEditTrav }) => {
+	const auth = getAuthUser();
+	const [formData, setFormData] = useState({});
 
-  function hideEdit() {
-    var x = document.getElementById("edit");
-    x.style.display = "none";
-  }
+	useEffect(() => {
+		// Fetch the data using axios and update the state
+		axios
+			.get(`http://localhost:4000/traveler/getone/${id}`)
+			.then(response => {
+				console.log(response);
+				setFormData(response.data);
+			})
+			.catch(error => console.log(error));
+	}, [id]);
 
-  return (
-    <div id="edit" style={{ top: "0px", position: "fixed", left: 0 }}>
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <form onSubmit={handleSubmit}>
-            <div className="modal-header headadd">
-              <h4 className="modal-title">Edit Travelers</h4>
-              <button
-                type="button"
-                className="close btnx"
-                data-dismiss="modal"
-                aria-hidden="true"
-                onClick={hideEdit}
-              >
-                ×
-              </button>
-            </div>
-            <hr />
-            <div className="modal-body ">
-              <div className="form-group bodyadd">
-                <label>Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  required
-                  value={formData.name || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-group bodyadd">
-                <label>Email</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  required
-                  value={formData.email || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-group bodyadd">
-                <label>Phone</label>
-                <textarea
-                  className="form-control"
-                  required
-                  value={formData.phone || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                ></textarea>
-              </div>
-            </div>
-            <div className="modal-footer footer">
-              <input
-                type="button"
-                className="btn btn-default"
-                data-dismiss="modal"
-                value="Cancel "
-                onClick={hideEdit}
-              />
-              <input type="submit" className="btn btn-info" value="Save" />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
+	async function handleSubmit(e) {
+		e.preventDefault();
+		try {
+			// Update the data using axios
+			await axios.put(`http://localhost:4000/traveler/${id}`, formData, {
+				headers: {
+					token: auth.token,
+				},
+			});
+			onEditTrav();
+			hideEdit();
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	function hideEdit() {
+		const x = document.getElementById('edit-modal');
+		x.style.display = 'none';
+	}
+
+	return (
+		<form
+			id='edit-modal'
+			onSubmit={handleSubmit}
+			className={classes['edit-modal']}>
+			<h4>Edit Traveler</h4>
+			<div>
+				<label>Name</label>
+				<input
+					type='text'
+					className='form-control'
+					required
+					value={formData.name || ''}
+					onChange={e => setFormData({ ...formData, name: e.target.value })}
+				/>
+			</div>
+			<div>
+				<label>Email</label>
+				<input
+					type='text'
+					className='form-control'
+					required
+					value={formData.email || ''}
+					onChange={e => setFormData({ ...formData, email: e.target.value })}
+				/>
+			</div>
+			<div>
+				<label>Phone</label>
+				<input
+					type='text'
+					className='form-control'
+					required
+					value={formData.phone || ''}
+					onChange={e => setFormData({ ...formData, phone: e.target.value })}
+				/>
+			</div>
+
+			<div className={classes['btn-box']}>
+				<button
+					className={classes['btn-cancel']}
+					type='button'
+					data-dismiss='modal'
+					onClick={hideEdit}>
+					Cancel
+				</button>
+				<button className={classes['btn-save']} type='submit'>
+					Save
+				</button>
+			</div>
+		</form>
+	);
 };
 
 export default EditTrav;

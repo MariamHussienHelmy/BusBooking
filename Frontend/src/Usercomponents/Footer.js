@@ -1,11 +1,8 @@
 import React from 'react';
-import "../UserStyle/Footer.css";
+import '../UserStyle/Footer.css';
+
 const Footer = () => {
-    return (
-        <footer>
-            <p>Copyright &copy; FCAIH</p>
-        </footer>
-    );
+	return <footer>Copyright &copy; FCAIH</footer>;
 };
 
 export default Footer;
