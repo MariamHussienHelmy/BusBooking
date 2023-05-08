@@ -87,7 +87,7 @@ router.put(
   } 
 ); 
  
-router.get("/history/:id", async (req, res) => { 
+router.get("/history/:id", async (req, res) => { //user id
   const query = util.promisify(conn.query).bind(conn); 
   const appointment = await query( 
     "SELECT  appointment_requests.status , appointments.id , appointments.from_where, appointments.to_where,appointments.ticket_price, appointments.day_and_time  FROM appointment_requests join appointments WHERE appointment_requests.traveler_id= ? and appointment_requests.appointment_id=appointments.id", 
